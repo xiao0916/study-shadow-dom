@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>自定义元素</title>
+  </head>
+  <body>
+    <my-dialog>
+      <span slot="title">这个一个弹窗</span>
+      <div slot="content">
+        <p>
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Beatae ea
+          sunt illo quo itaque, aspernatur impedit repellat ad quam quos quas
+          deserunt voluptatibus quod, illum autem velit culpa. Veritatis, dolor.
+        </p>
+        <p>
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Beatae ea
+          sunt illo quo itaque, aspernatur impedit repellat ad quam quos quas
+          deserunt voluptatibus quod, illum autem velit culpa. Veritatis, dolor.
+        </p>
+        <p>
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Beatae ea
+          sunt illo quo itaque, aspernatur impedit repellat ad quam quos quas
+          deserunt voluptatibus quod, illum autem velit culpa. Veritatis, dolor.
+        </p>
+        <p>
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Beatae ea
+          sunt illo quo itaque, aspernatur impedit repellat ad quam quos quas
+          deserunt voluptatibus quod, illum autem velit culpa. Veritatis, dolor.
+        </p>
+        <p>
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Beatae ea
+          sunt illo quo itaque, aspernatur impedit repellat ad quam quos quas
+          deserunt voluptatibus quod, illum autem velit culpa. Veritatis, dolor.
+        </p>
+      </div>
+    </my-dialog>
+
+    <template id="dialog-template">
+      <link rel="stylesheet" href="./css/dialog.css"></link>
+      <div class="dialog">
+        <button class="dialog-close">关闭</button>
+        <header class="dialog-header">
+          <h2 class="dialog-title"><slot name="title">Title</slot></h2>
+        </header>
+        <main class="dialog-body">
+          <slot name="content">Content</slot>
+        </main>
+      </div>
+    </template>
+
+    <script>
+      class Dialog extends HTMLElement {
+        constructor() {
+          super();
+
+          const shadow = this.attachShadow({ mode: "open" });
+          const template = document.getElementById("dialog-template").content;
+          shadow.appendChild(template);
+        }
+
+        connectedCallback() {
+          console.log("Dialog 自定义元素添加至页面。");
+        }
+
+        disconnectedCallback() {
+          console.log("Dialog 自定义元素从页面中移除。");
+        }
+
+        adoptedCallback() {
+          console.log("Dialog 自定义元素移动至新页面。");
+        }
+      }
+      customElements.define("my-dialog", Dialog);
+    </script>
+  </body>
+</html>

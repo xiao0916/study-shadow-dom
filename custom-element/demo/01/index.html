@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <p is="word-count">word-count</p>
+    <popup-info
+      img="img/alt.png"
+      data-text="Your card validation code (CVC) is an extra security feature — it is the last 3 or 4 numbers on the back of your card."
+    >
+    </popup-info>
+
+    <script>
+      // 自定义内置元素（Customized built-in element）继承自标准的 HTML 元素，例如 HTMLImageElement 或 HTMLParagraphElement。它们的实现定义了标准元素的行为。
+      class WordCount extends HTMLParagraphElement {
+        static observedAttributes = ["color", "size"];
+        constructor() {
+          super();
+        }
+
+        connectedCallback() {
+          console.log("WordCount 自定义元素添加至页面。");
+        }
+
+        disconnectedCallback() {
+          console.log("WordCount 自定义元素从页面中移除。");
+        }
+
+        adoptedCallback() {
+          console.log("WordCount 自定义元素移动至新页面。");
+        }
+
+        attributeChangedCallback(name, oldValue, newValue) {
+          console.log(`WordCount 属性 ${name} 已变更。`);
+        }
+      }
+      customElements.define("word-count", WordCount, { extends: "p" });
+
+      // 独立自定义元素（Autonomous custom element）继承自 HTML 元素基类 HTMLElement。你必须从头开始实现它们的行为。
+      class PopupInfo extends HTMLElement {
+        static observedAttributes = ["color", "size"];
+
+        constructor() {
+          super();
+        }
+
+        connectedCallback() {
+          console.log("PopupInfo 自定义元素添加至页面。");
+
+          // 创建影子根
+          const shadow = this.attachShadow({ mode: "open" });
+
+          // 创建几个 span
+          const wrapper = document.createElement("span");
+          wrapper.setAttribute("class", "wrapper");
+
+          const icon = document.createElement("span");
+          icon.setAttribute("class", "icon");
+          icon.setAttribute("tabindex", 0);
+
+          const info = document.createElement("span");
+          info.setAttribute("class", "info");
+
+          // 获取属性内容然后将其放入 info 这个 span 内
+          const text = this.getAttribute("data-text");
+          info.textContent = text;
+
+          // 插入图标
+          let imgUrl;
+          if (this.hasAttribute("img")) {
+            imgUrl = this.getAttribute("img");
+          } else {
+            imgUrl = "img/default.png";
+          }
+
+          const img = document.createElement("img");
+          img.src = imgUrl;
+          icon.appendChild(img);
+
+          // 创建一些 CSS 应用于影子 DOM
+          const style = document.createElement("style");
+          console.log(style.isConnected);
+
+          style.textContent = `
+            .wrapper {
+              position: relative;
+            }
+
+            .info {
+              font-size: 0.8rem;
+              width: 200px;
+              display: inline-block;
+              border: 1px solid black;
+              padding: 10px;
+              background: white;
+              border-radius: 10px;
+              opacity: 0;
+              transition: 0.6s all;
+              position: absolute;
+              bottom: 20px;
+              left: 10px;
+              z-index: 3;
+            }
+
+            img {
+              width: 1.2rem;
+            }
+
+            .icon:hover + .info, .icon:focus + .info {
+              opacity: 1;
+            }
+          `;
+
+          // 将创建好的元素附加到影子 DOM 上
+          shadow.appendChild(style);
+          console.log(style.isConnected);
+          shadow.appendChild(wrapper);
+          wrapper.appendChild(icon);
+          wrapper.appendChild(info);
+        }
+
+        disconnectedCallback() {
+          console.log("PopupInfo 自定义元素从页面中移除。");
+        }
+
+        adoptedCallback() {
+          console.log("PopupInfo 自定义元素移动至新页面。");
+        }
+
+        attributeChangedCallback(name, oldValue, newValue) {
+          console.log(`PopupInfo 属性 ${name} 已变更。`);
+        }
+      }
+      customElements.define("popup-info", PopupInfo);
+    </script>
+
+    <script>
+      const p = document.querySelector('p[is="word-count"]');
+      p.setAttribute("color", "red");
+      p.setAttribute("size", "100");
+    </script>
+  </body>
+</html>
